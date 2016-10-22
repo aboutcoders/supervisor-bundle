@@ -1,0 +1,3 @@
+abc-supervisor-process:
+    resource: "@AbcSupervisorBundle/Resources/config/routing/rest.xml"
+    prefix: /api

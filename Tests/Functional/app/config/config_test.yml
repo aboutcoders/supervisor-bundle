@@ -1,0 +1,38 @@
+imports:
+    - { resource: services.yml }
+
+framework:
+    secret: Hell yeah!
+    router: { resource: "%kernel.root_dir%/config/routing.yml" }
+    form: true
+    csrf_protection: true
+    templating:
+        engines: ['twig']
+    test: ~
+    session:
+        storage_id: session.storage.mock_file
+    default_locale: en
+    translator: { fallback: en }
+    profiler:
+        collect: false
+    validation: { enable_annotations: true }
+
+# Twig Configuration
+twig:
+    debug:            "%kernel.debug%"
+    strict_variables: "%kernel.debug%"
+
+monolog:
+    handlers:
+        main:
+            type:     stream
+            path:     "%kernel.logs_dir%/%kernel.environment%.log"
+            level:    debug
+
+abc_supervisor:
+    connections:
+        localhost:
+            host: channelmanager.local
+            port: 9001
+            username: superuser
+            password: 12345

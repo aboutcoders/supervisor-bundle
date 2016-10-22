@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <parameters>
+        <parameter key="abc.supervisor.connector_factory.class">Abc\Bundle\SupervisorBundle\Supervisor\ConnectorFactory</parameter>
+        <parameter key="abc.supervisor.supervisor_factory.class">Abc\Bundle\SupervisorBundle\Supervisor\SupervisorFactory</parameter>
+        <parameter key="abc.supervisor.connector.class">Supervisor\Connector\XmlRpc</parameter>
+        <parameter key="abc.supervisor.supervisor.class">Abc\Bundle\SupervisorBundle\Supervisor\Supervisor</parameter>
+        <parameter key="abc.supervisor.manager.class">Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager</parameter>
+    </parameters>
+    <services>
+        <service id="abc.supervisor.connector_factory" class="%abc.supervisor.connector_factory.class%"/>
+        <service id="abc.supervisor.supervisor_factory" class="%abc.supervisor.supervisor_factory.class%"/>
+        <service id="abc.supervisor.connector" class="%abc.supervisor.connector.class%" abstract="true"/>
+        <service id="abc.supervisor.supervisor" class="%abc.supervisor.supervisor.class%" abstract="true"/>
+        <service id="abc.supervisor.manager" class="%abc.supervisor.manager.class%" />
+    </services>
+</container>

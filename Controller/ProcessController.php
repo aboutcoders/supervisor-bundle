@@ -12,6 +12,7 @@ namespace Abc\Bundle\SupervisorBundle\Controller;
 
 use Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager;
 use fXmlRpc\Exception\FaultException;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
@@ -22,6 +23,17 @@ class ProcessController extends Controller
 {
     /**
      * Returns a list of processes.
+     *
+     * @ApiDoc(
+     *   description="Returns a collection of processes",
+     *   section="AbcSupervisorBundle",
+     *   requirements={
+     *      {"name"="id", "dataType"="string", "required"=true, "description"="The supervisor id"},
+     *   },
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when supervisor not found"
+     * })
      *
      * @param string $id The id of the supervisor instance
      * @return JsonResponse
@@ -38,6 +50,19 @@ class ProcessController extends Controller
 
     /**
      * Starts a process.
+     *
+     * @ApiDoc(
+     *   description="Starts a supervisor process",
+     *   section="AbcSupervisorBundle",
+     *   requirements={
+     *      {"name"="id", "dataType"="string", "required"=true, "description"="The supervisor id"},
+     *      {"name"="name", "dataType"="string", "required"=true, "description"="The process name"},
+     *   },
+     * statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when supervisor or process not found"
+     *   }
+     * )
      *
      * @param string $id   The id of the supervisor instance
      * @param string $name The process name
@@ -65,6 +90,19 @@ class ProcessController extends Controller
 
     /**
      * Stops a process.
+     *
+     * @ApiDoc(
+     *   description="Starts a supervisor process",
+     *   section="AbcSupervisorBundle",
+     *   requirements={
+     *      {"name"="id", "dataType"="string", "required"=true, "description"="The supervisor id"},
+     *      {"name"="name", "dataType"="string", "required"=true, "description"="The process name"},
+     *   },
+     * statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when supervisor or process not found"
+     *   }
+     * )
      *
      * @param string $id   The id of the supervisor instance
      * @param string $name The process name

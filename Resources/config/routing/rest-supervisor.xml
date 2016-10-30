@@ -4,7 +4,7 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="abc_supervisor_list" path="/{id}" methods="GET">
+    <route id="abc_supervisor_list" path="/supervisors" methods="GET">
         <default key="_controller">AbcSupervisorBundle:Supervisor:list</default>
         <default key="_format">json</default>
         <requirement key="_format">json</requirement>

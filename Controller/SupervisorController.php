@@ -8,17 +8,42 @@
 * file that was distributed with this source code.
 */
 
-namespace Abc\Bundle\JobBundle\Controller;
+namespace Abc\Bundle\SupervisorBundle\Controller;
 
-use Abc\Bundle\JobBundle\Model\AgentInterface;
 use Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
 class SupervisorController extends Controller
 {
+    /**
+     * Returns a list of supervisors.
+     *
+     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     */
+    public function listAction()
+    {
+        $supervisors = array();
+        foreach ($this->getSupervisorManager()->findAll() as $supervisor) {
+            $data                = array();
+            $data['id']          = $supervisor->getId();
+            $data['host']        = $supervisor->getHost();
+            $data['pid']         = $supervisor->getClient()->getPID();
+            $data['status']      = $supervisor->getStatus();
+            $data['api_version'] = $supervisor->getClient()->getAPIVersion();
+            $supervisors[]       = $data;
+        }
+
+        return $this->json($supervisors);
+    }
+
+    /**
+     * @return SupervisorManager
+     */
+    protected function getSupervisorManager()
+    {
+        return $this->get('abc.supervisor.manager');
+    }
 }

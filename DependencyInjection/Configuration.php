@@ -34,7 +34,7 @@ class Configuration implements ConfigurationInterface
                 ->prototype('array')
                     ->children()
                         ->scalarNode('host')->isRequired()->end()
-                        ->scalarNode('port')->isRequired()->end()
+                        ->scalarNode('port')->defaultValue(9001)->end()
                         ->scalarNode('username')->end()
                         ->scalarNode('password')->end()
                     ->end()

@@ -10,6 +10,7 @@
 
 namespace Abc\Bundle\SupervisorBundle\Supervisor;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Supervisor\Supervisor as Client;
 
 /**
@@ -20,7 +21,7 @@ class Supervisor
     /**
      * @var string
      */
-    protected $name;
+    protected $id;
 
     /**
      * @var string
@@ -28,23 +29,33 @@ class Supervisor
     protected $host;
 
     /**
-     * @var Process[]
-     */
-    protected $processes;
-
-    /**
      * @var Client
      */
     protected $client;
 
     /**
-     * @param string $name
+     * @var ArrayCollection|Process[]
+     */
+    protected $processes;
+
+    /**
+     * @var string
+     */
+    protected $status;
+
+    /**
+     * @var bool
+     */
+    private $initialized = false;
+
+    /**
+     * @param string $id
      * @param string $host
      * @param Client $client
      */
-    public function __construct($name, $host, Client $client)
+    public function __construct($id, $host, Client $client)
     {
-        $this->name   = $name;
+        $this->id     = $id;
         $this->host   = $host;
         $this->client = $client;
     }
@@ -52,9 +63,9 @@ class Supervisor
     /**
      * @return string
      */
-    public function getName()
+    public function getId()
     {
-        return $this->name;
+        return $this->id;
     }
 
     /**
@@ -66,22 +77,6 @@ class Supervisor
     }
 
     /**
-     * {@inheritdoc}
-     */
-    public function start($name, $wait = true)
-    {
-        $this->getClient()->startProcess($this->getProcess($name)->getId(), $wait);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function stop($name, $wait = true)
-    {
-        $this->getClient()->stopProcess($this->getProcess($name)->getId(), $wait);
-    }
-
-    /**
      * @return Client
      */
     public function getClient()
@@ -90,32 +85,27 @@ class Supervisor
     }
 
     /**
-     * @param string $name
-     * @return Process
-     * @throws \InvalidArgumentException If a process with the given name does not exist
+     * @return string
      */
-    public function getProcess($name)
+    public function getStatus()
     {
-        if (null == $this->processes) {
-            $this->initProcesses();
+        if (null == $this->status) {
+            $statusArray  = $this->getClient()->getState();
+            $this->status = $statusArray['statename'];
         }
 
-        if (!isset($this->processes[$name])) {
-            throw new \InvalidArgumentException(sprintf('A process with name "%s" does not exist', $name));
-        }
-
-        return $this->processes[$name];
+        return $this->status;
     }
 
     /**
      *
      * @param string|null $group The name of a process group
-     * @return Process[]
+     * @return ProcessInterface[]
      */
     public function getProcesses($group = null)
     {
-        if (null == $this->processes) {
-            $this->initProcesses();
+        if (!$this->initialized) {
+            $this->init();
         }
 
         if (null != $group) {
@@ -129,21 +119,83 @@ class Supervisor
             return $processes;
         }
 
-        return array_values($this->processes);
+        return $this->processes;
     }
 
-    public function loadProcess($name)
+    /**
+     * @param string $name The name of the process
+     * @return ProcessInterface
+     * @throws \InvalidArgumentException If a process with the given name does not exist
+     */
+    public function getProcess($name)
     {
-        return new Process($this->getClient()->getProcess($this->getProcess($name)->getId()));
-    }
-
-    protected function initProcesses()
-    {
-        foreach ($this->getClient()->getAllProcesses() as $process) {
-            /**
-             * @var \Supervisor\Process $process
-             */
-            $this->processes[$process->getName()] = new Process($process);
+        if (!$this->initialized) {
+            $this->init();
         }
+
+        foreach ($this->processes as $process) {
+            if ($name == $process->getName()) {
+                return $process;
+            }
+        }
+
+        throw new \InvalidArgumentException(sprintf('A process with name "%s" does not exist', $name));
+    }
+
+    /**
+     * @param ProcessInterface $process
+     * @param boolean          $wait Whether to wait until process is started (optional, true by default)
+     * @throws \InvalidArgumentException If the process is not managed
+     */
+    public function startProcess(ProcessInterface $process, $wait = true)
+    {
+        $this->getClient()->startProcess($this->doGetProcess($process)->getId(), $wait);
+    }
+
+    /**
+     * @param ProcessInterface $process
+     * @param boolean          $wait Whether to wait until process is stopped (optional, true by default)
+     * @throws \InvalidArgumentException If the process is not managed
+     */
+    public function stopProcess(ProcessInterface $process, $wait = true)
+    {
+        $this->getClient()->stopProcess($this->doGetProcess($process)->getId(), $wait);
+    }
+
+    /**
+     * @param ProcessInterface $process
+     * @return void
+     * @throws \InvalidArgumentException If the process is not managed
+     */
+    public function refreshProcess(ProcessInterface $process)
+    {
+        $process = $this->doGetProcess($process);
+        $process->setProcess($this->getClient()->getProcess($process->getId()));
+    }
+
+    /**
+     * @return void
+     */
+    protected function init()
+    {
+        $this->processes = new ArrayCollection();
+        foreach ($this->getClient()->getAllProcesses() as $process) {
+            $this->processes->add(new Process($process));
+        }
+        $this->initialized = true;
+    }
+
+    /**
+     * @param ProcessInterface $process
+     * @return Process
+     * @throws \InvalidArgumentException If the process is not managed
+     */
+    protected function doGetProcess(ProcessInterface $process)
+    {
+        if (!$process instanceof Process || !$this->processes->contains($process)) {
+            throw new \InvalidArgumentException('The given instance is not managed by this manager');
+        }
+
+        return $process;
     }
 }

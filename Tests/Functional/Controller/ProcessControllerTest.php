@@ -10,71 +10,75 @@
 
 namespace Abc\Bundle\SupervisorBundle\Tests\Functional\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager;
+use Abc\Bundle\SupervisorBundle\Test\WebTestCase;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
 class ProcessControllerTest extends WebTestCase
 {
+    /**
+     * @var SupervisorManager|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $manager;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setUp()
+    {
+        $this->manager = $this->createMock(SupervisorManager::class);
+    }
+
     public function testListAction()
     {
         $url = '/api/localhost/processes';
 
         $client = static::createClient();
 
-        $client->request(
-            'GET',
-            $url,
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            null,
-            'json'
-        );
+        $this->manager->expects($this->once())
+            ->method('findById')
+            ->willReturn(null);
 
-        //$this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->mockServices(['abc.supervisor.manager' => $this->manager]);
 
-        var_dump($client->getResponse()->getContent());
-    }
+        $client->request('GET', $url);
 
-    public function testStopAction()
-    {
-        $url = '/api/localhost/processes/queue-agent_default/stop';
-
-        $client = static::createClient();
-
-        $client->request(
-            'POST',
-            $url,
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            null,
-            'json'
-        );
-
-        var_dump($client->getResponse()->getContent());
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 
     public function testStartAction()
     {
-        $url = '/api/localhost/processes/queue-agent_default/start';
+        $url = '/api/localhost/processes/foobar/start';
 
         $client = static::createClient();
 
-        $client->request(
-            'POST',
-            $url,
-            [],
-            [],
-            ['CONTENT_TYPE' => 'application/json'],
-            null,
-            'json'
-        );
+        $this->manager->expects($this->once())
+            ->method('findById')
+            ->willReturn(null);
 
-        //$this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->mockServices(['abc.supervisor.manager' => $this->manager]);
 
-        var_dump($client->getResponse()->getContent());
+        $client->request('POST', $url);
+
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
+    }
+
+    public function testStopAction()
+    {
+        $url = '/api/localhost/processes/foobar/stop';
+
+        $client = static::createClient();
+
+        $this->manager->expects($this->once())
+            ->method('findById')
+            ->willReturn(null);
+
+        $this->mockServices(['abc.supervisor.manager' => $this->manager]);
+
+        $client->request('POST', $url);
+
+        $this->assertEquals(404, $client->getResponse()->getStatusCode());
     }
 }

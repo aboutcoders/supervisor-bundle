@@ -38,13 +38,13 @@ class SupervisorManager
     }
 
     /**
-     * @param string $key The connection key
+     * @param string $id
      * @return Supervisor|null
      */
-    public function findByKey($key)
+    public function findById($id)
     {
         foreach ($this->supervisors as $instance) {
-            if ($key == $instance->getName()) {
+            if ($id == $instance->getId()) {
                 return $instance;
             }
         }

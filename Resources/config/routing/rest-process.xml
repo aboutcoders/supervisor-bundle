@@ -4,19 +4,19 @@
         xsi:schemaLocation="http://symfony.com/schema/routing
         http://symfony.com/schema/routing/routing-1.0.xsd">
 
-    <route id="abc_supervisor_process_list" path="/{key}/processes" methods="GET">
+    <route id="abc_supervisor_process_list" path="/{id}/processes" methods="GET">
         <default key="_controller">AbcSupervisorBundle:Process:list</default>
         <default key="_format">json</default>
         <requirement key="_format">json</requirement>
     </route>
 
-    <route id="abc_supervisor_process_start" path="/{key}/processes/{name}/start" methods="POST">
+    <route id="abc_supervisor_process_start" path="/{id}/processes/{name}/start" methods="POST">
         <default key="_controller">AbcSupervisorBundle:Process:start</default>
         <default key="_format">json</default>
         <requirement key="_format">json</requirement>
     </route>
 
-    <route id="abc_supervisor_process_stop" path="/{key}/processes/{name}/stop" methods="POST">
+    <route id="abc_supervisor_process_stop" path="/{id}/processes/{name}/stop" methods="POST">
         <default key="_controller">AbcSupervisorBundle:Process:stop</default>
         <default key="_format">json</default>
         <requirement key="_format">json</requirement>

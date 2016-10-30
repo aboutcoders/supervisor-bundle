@@ -10,8 +10,7 @@
 
 namespace Abc\Bundle\SupervisorBundle\Command;
 
-use Abc\Bundle\SupervisorBundle\Supervisor\Process;
-use Abc\Bundle\SupervisorBundle\Supervisor\Supervisor;
+use Abc\Bundle\SupervisorBundle\Supervisor\ProcessInterface;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -19,7 +18,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class SupervisorStopCommand extends SupervisorCommand
+class ProcessStatusCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -28,9 +27,8 @@ class SupervisorStopCommand extends SupervisorCommand
     {
         parent::configure();
 
-        $this
-            ->setName('abc:supervisor:stop')
-            ->setDescription('Stops the supervisor processes');
+        $this->setName('abc:supervisor:process:status');
+        $this->setDescription('Shows status of supervisor processes');
     }
 
     /**
@@ -41,10 +39,11 @@ class SupervisorStopCommand extends SupervisorCommand
         $error = false;
         $io    = new SymfonyStyle($input, $output);
         foreach ($this->supervisors as $supervisor) {
-            $io->section(sprintf('%s (%s)', $supervisor->getName(), $supervisor->getHost()));
+            $io->section(sprintf('%s (%s)', $supervisor->getId(), $supervisor->getHost()));
+
             if ($process = $input->getOption('process')) {
                 try {
-                    $error = $this->stopProcess($io, $supervisor, $supervisor->getProcess($process));
+                    $this->status($io, $supervisor->getProcess($process));
                 } catch (\InvalidArgumentException $e) {
                     $io->error($e->getMessage());
                     $error = true;
@@ -52,7 +51,7 @@ class SupervisorStopCommand extends SupervisorCommand
             } else {
                 $processes = $supervisor->getProcesses($input->getOption('group'));
                 foreach ($processes as $process) {
-                    $error = $this->stopProcess($io, $supervisor, $process);
+                    $this->status($io, $process);
                 }
 
                 if (($group = $input->getOption('group')) && count($processes) == 0) {
@@ -65,27 +64,20 @@ class SupervisorStopCommand extends SupervisorCommand
     }
 
     /**
-     * @param SymfonyStyle $io
-     * @param Supervisor   $supervisor
-     * @param Process      $process
-     * @return bool Whether an error occurred
+     * @param SymfonyStyle     $io
+     * @param ProcessInterface $process
      */
-    protected function stopProcess(SymfonyStyle $io, Supervisor $supervisor, Process $process)
+    protected function status(SymfonyStyle $io, ProcessInterface $process)
     {
-        $error = false;
-        $io->comment(sprintf('Stopping process <info>%s</info>', $process->getName()));
-        try {
-            $supervisor->stop($process->getName());
-            $io->success('Stopped');
-        } catch (\Exception $e) {
-            if (false !== strpos($e->getMessage(), 'NOT_RUNNING')) {
-                $io->warning('Not running');
-            } else {
-                $error = true;
-                $io->error($e->getMessage());
-            }
-        }
+        if (in_array($process->getState(), [\Supervisor\Process::BACKOFF, \Supervisor\Process::EXITED, \Supervisor\Process::FATAL])) {
+            $io->block($process->getName(), $process->getStatename(), 'fg=white;bg=red', ' ', true);
 
-        return $error;
+        } elseif (in_array($process->getState(), [\Supervisor\Process::STARTING, \Supervisor\Process::STOPPING, \Supervisor\Process::UNKNOWN])) {
+            $io->block($process->getName(), $process->getStatename(), 'fg=black;bg=yellow', ' ', true);
+        } elseif (in_array($process->getState(), [\Supervisor\Process::STOPPED])) {
+            $io->block($process->getName(), $process->getStatename(), 'fg=white;bg=default', ' ', true);
+        } else {
+            $io->block($process->getName(), $process->getStatename(), 'fg=black;bg=green', ' ', true);
+        }
     }
 }

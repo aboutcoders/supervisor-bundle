@@ -10,7 +10,7 @@
 
 namespace Abc\Bundle\SupervisorBundle\Command;
 
-use Abc\Bundle\SupervisorBundle\Supervisor\Process;
+use Abc\Bundle\SupervisorBundle\Supervisor\ProcessInterface;
 use Abc\Bundle\SupervisorBundle\Supervisor\Supervisor;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -19,7 +19,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class SupervisorStartCommand extends SupervisorCommand
+class ProcessStartCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
@@ -28,7 +28,7 @@ class SupervisorStartCommand extends SupervisorCommand
     {
         parent::configure();
 
-        $this->setName('abc:supervisor:start');
+        $this->setName('abc:supervisor:process:start');
         $this->setDescription('Starts supervisor processes');
     }
 
@@ -40,8 +40,7 @@ class SupervisorStartCommand extends SupervisorCommand
         $error = false;
         $io    = new SymfonyStyle($input, $output);
         foreach ($this->supervisors as $supervisor) {
-
-            $io->section(sprintf('%s (%s)', $supervisor->getName(), $supervisor->getHost()));
+            $io->section(sprintf('%s (%s)', $supervisor->getId(), $supervisor->getHost()));
             if ($process = $input->getOption('process')) {
                 try {
                     $error = $this->startProcess($io, $supervisor, $supervisor->getProcess($process));
@@ -65,17 +64,17 @@ class SupervisorStartCommand extends SupervisorCommand
     }
 
     /**
-     * @param SymfonyStyle $io
-     * @param Supervisor   $supervisor
-     * @param Process      $process
+     * @param SymfonyStyle     $io
+     * @param Supervisor       $supervisor
+     * @param ProcessInterface $process
      * @return bool Whether an error occurred
      */
-    protected function startProcess(SymfonyStyle $io, Supervisor $supervisor, Process $process)
+    protected function startProcess(SymfonyStyle $io, Supervisor $supervisor, ProcessInterface $process)
     {
         $error = false;
         $io->comment(sprintf('Starting process <info>%s</info>', $process->getName()));
         try {
-            $supervisor->start($process->getName());
+            $supervisor->startProcess($process);
             $io->success('Started');
         } catch (\Exception $e) {
             if (false !== strpos($e->getMessage(), 'ALREADY_STARTED')) {
@@ -88,4 +87,4 @@ class SupervisorStartCommand extends SupervisorCommand
 
         return $error;
     }
-} 
+}

@@ -1,0 +1,7 @@
+abc_supervisor:
+    connections:
+        localhost:
+            host: localhost
+            port: 9001
+            username: superuser
+            password: 12345

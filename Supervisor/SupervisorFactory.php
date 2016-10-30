@@ -18,13 +18,13 @@ use Supervisor\Connector;
 class SupervisorFactory
 {
     /**
-     * @param           $name
-     * @param           $host
+     * @param string    $id
+     * @param string    $host
      * @param Connector $connector
      * @return Supervisor
      */
-    public function createSupervisor($name, $host, Connector $connector)
+    public function createSupervisor($id, $host, Connector $connector)
     {
-        return new Supervisor($name, $host, new \Supervisor\Supervisor($connector));
+        return new Supervisor($id, $host, new \Supervisor\Supervisor($connector));
     }
 }

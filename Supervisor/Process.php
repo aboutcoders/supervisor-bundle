@@ -15,7 +15,7 @@ use Supervisor\Process as BaseProcess;
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class Process
+class Process implements ProcessInterface
 {
     /**
      * @var BaseProcess
@@ -30,13 +30,24 @@ class Process
         $this->process = $process;
     }
 
+    /**
+     * @param BaseProcess $process
+     * @return void
+     */
+    public function setProcess(BaseProcess $process) {
+        $this->process = $process;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function getId()
     {
         return $this->getGroup() == null ? $this->getName() : $this->getGroup() . ':' . $this->getName();
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getName()
     {
@@ -44,7 +55,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getDescription()
     {
@@ -52,7 +63,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getGroup()
     {
@@ -60,7 +71,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPid()
     {
@@ -68,7 +79,7 @@ class Process
     }
 
     /**
-     * @return int
+     * {@inheritdoc}
      */
     public function getUptime()
     {
@@ -76,7 +87,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getLogfile()
     {
@@ -84,7 +95,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getStderrLogfile()
     {
@@ -92,7 +103,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getStdoutLogfile()
     {
@@ -100,7 +111,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getState()
     {
@@ -108,7 +119,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getStatename()
     {
@@ -116,7 +127,7 @@ class Process
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getStart()
     {
@@ -124,7 +135,7 @@ class Process
     }
 
     /**
-     * @return array
+     * {@inheritdoc}
      */
     public function toArray()
     {

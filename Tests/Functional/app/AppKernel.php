@@ -16,7 +16,6 @@ use Symfony\Component\Config\Loader\LoaderInterface;
  */
 class AppKernel extends Kernel
 {
-
     /**
      * @var \Closure
      */
@@ -31,7 +30,6 @@ class AppKernel extends Kernel
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
-            new Nelmio\ApiDocBundle\NelmioApiDocBundle(),
             new \Abc\Bundle\SupervisorBundle\AbcSupervisorBundle()
         );
     }

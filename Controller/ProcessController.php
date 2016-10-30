@@ -23,14 +23,14 @@ class ProcessController extends Controller
     /**
      * Returns a list of processes.
      *
-     * @param string $key The supervisor key
+     * @param string $id The id of the supervisor instance
      * @return JsonResponse
      */
-    public function listAction($key)
+    public function listAction($id)
     {
-        $supervisor = $this->getManager()->findByKey($key);
+        $supervisor = $this->getManager()->findById($id);
         if (!$supervisor) {
-            return $this->json(['error' => sprintf('Supervisor with key "%s" not found', $key)], 404);
+            return $this->json(['error' => sprintf('Supervisor with id "%s" not found', $id)], 404);
         }
 
         return $this->json($supervisor->getClient()->getAllProcessInfo());
@@ -39,22 +39,25 @@ class ProcessController extends Controller
     /**
      * Starts a process.
      *
-     * @param string $key  The supervisor key
+     * @param string $id   The id of the supervisor instance
      * @param string $name The process name
      * @param bool   $wait
      * @return JsonResponse
      */
-    public function startAction($key, $name, $wait = false)
+    public function startAction($id, $name, $wait = false)
     {
-        $supervisor = $this->getManager()->findByKey($key);
+        $supervisor = $this->getManager()->findById($id);
         if (!$supervisor) {
-            return $this->json(['error' => sprintf('Supervisor with key "%s" not found', $key)], 404);
+            return $this->json(['error' => sprintf('Supervisor with id "%s" not found', $id)], 404);
         }
 
         try {
-            $supervisor->start($name, $wait);
+            $process = $supervisor->getProcess($name);
 
-            return $this->json($supervisor->loadProcess($name)->toArray());
+            $supervisor->startProcess($process, $wait);
+            $supervisor->refreshProcess($process);
+
+            return $this->json($process->toArray());
         } catch (FaultException $e) {
             return $this->json(['error' => $e->getMessage()], 500);
         }
@@ -63,22 +66,25 @@ class ProcessController extends Controller
     /**
      * Stops a process.
      *
-     * @param string $key  The supervisor key
+     * @param string $id   The id of the supervisor instance
      * @param string $name The process name
      * @param bool   $wait
      * @return JsonResponse
      */
-    public function stopAction($key, $name, $wait = false)
+    public function stopAction($id, $name, $wait = false)
     {
-        $supervisor = $this->getManager()->findByKey($key);
+        $supervisor = $this->getManager()->findById($id);
         if (!$supervisor) {
-            return $this->json(['error' => sprintf('Supervisor with key "%s" not found', $key)], 404);
+            return $this->json(['error' => sprintf('Supervisor with id "%s" not found', $id)], 404);
         }
 
         try {
-            $supervisor->stop($name, $wait);
+            $process = $supervisor->getProcess($name);
 
-            return $this->json($supervisor->loadProcess($name)->toArray());
+            $supervisor->stopProcess($process, $wait);
+            $supervisor->refreshProcess($process);
+
+            return $this->json($process->toArray());
         } catch (FaultException $e) {
             return $this->json(['error' => $e->getMessage()], 500);
         }

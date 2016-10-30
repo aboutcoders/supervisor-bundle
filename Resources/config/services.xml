@@ -10,11 +10,13 @@
         <parameter key="abc.supervisor.supervisor.class">Abc\Bundle\SupervisorBundle\Supervisor\Supervisor</parameter>
         <parameter key="abc.supervisor.manager.class">Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager</parameter>
     </parameters>
+
     <services>
-        <service id="abc.supervisor.connector_factory" class="%abc.supervisor.connector_factory.class%"/>
-        <service id="abc.supervisor.supervisor_factory" class="%abc.supervisor.supervisor_factory.class%"/>
+        <service id="abc.supervisor.connector_factory" class="%abc.supervisor.connector_factory.class%" public="false"/>
+        <service id="abc.supervisor.supervisor_factory" class="%abc.supervisor.supervisor_factory.class%" public="false"/>
         <service id="abc.supervisor.connector" class="%abc.supervisor.connector.class%" abstract="true"/>
         <service id="abc.supervisor.supervisor" class="%abc.supervisor.supervisor.class%" abstract="true"/>
-        <service id="abc.supervisor.manager" class="%abc.supervisor.manager.class%" />
+        <service id="abc.supervisor.manager" class="%abc.supervisor.manager.class%" public="true"/>
     </services>
+
 </container>

@@ -2,7 +2,7 @@
     "name": "aboutcoders/supervisor-bundle",
     "type": "symfony-bundle",
     "description": "A symfony bundle to manage supervisor.",
-    "keywords": ["supervisor", "supervisord", "process", "control", "system", "rest", "console", "commmand"],
+    "keywords": ["supervisor", "supervisord", "process", "control", "system", "rest", "console", "command"],
     "homepage": "http://aboutcoders.com",
     "license": "MIT",
     "authors": [
@@ -23,8 +23,6 @@
     "require-dev": {
         "symfony/monolog-bundle": "~2"
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "autoload": {
         "psr-4": { "Abc\\Bundle\\SupervisorBundle\\": "" }
     },
@@ -32,5 +30,7 @@
         "branch-alias": {
             "dev-master": "1.0-dev"
         }
-    }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }

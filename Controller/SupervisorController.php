@@ -11,6 +11,7 @@
 namespace Abc\Bundle\SupervisorBundle\Controller;
 
 use Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager;
+use Nelmio\ApiDocBundle\Annotation\ApiDoc;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
@@ -20,6 +21,14 @@ class SupervisorController extends Controller
 {
     /**
      * Returns a list of supervisors.
+     *
+     * @ApiDoc(
+     *   description="Returns a collection of supervisors",
+     *   section="AbcSupervisorBundle",
+     *   statusCodes = {
+     *     200 = "Returned when successful",
+     *     404 = "Returned when supervisor not found"
+     * })
      *
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */

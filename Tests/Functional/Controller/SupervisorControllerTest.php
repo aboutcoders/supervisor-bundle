@@ -33,7 +33,7 @@ class SupervisorControllerTest extends WebTestCase
 
     public function testListAction()
     {
-        $url = '/api/localhost';
+        $url = '/api/supervisors';
 
         $client = static::createClient();
 

@@ -33,7 +33,7 @@ class ProcessControllerTest extends WebTestCase
 
     public function testListAction()
     {
-        $url = '/api/localhost/processes';
+        $url = '/api/supervisors/localhost/processes';
 
         $client = static::createClient();
 
@@ -50,7 +50,7 @@ class ProcessControllerTest extends WebTestCase
 
     public function testStartAction()
     {
-        $url = '/api/localhost/processes/foobar/start';
+        $url = '/api/supervisors/localhost/processes/foobar/start';
 
         $client = static::createClient();
 
@@ -67,7 +67,7 @@ class ProcessControllerTest extends WebTestCase
 
     public function testStopAction()
     {
-        $url = '/api/localhost/processes/foobar/stop';
+        $url = '/api/supervisors/localhost/processes/foobar/stop';
 
         $client = static::createClient();
 

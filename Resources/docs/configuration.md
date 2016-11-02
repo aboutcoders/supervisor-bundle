@@ -12,5 +12,3 @@ abc_supervisor:
             username: user
             password: secret
 ```
-
-Next Step: [Basic Usage](./basic-usage.md)

@@ -10,24 +10,30 @@
 
 namespace Abc\Bundle\SupervisorBundle\Command;
 
-use Abc\Bundle\SupervisorBundle\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class SupervisorCommand extends BaseCommand
+class SupervisorStatusCommand extends BaseCommand
 {
     /**
      * {@inheritdoc}
      */
     public function configure()
     {
-        parent::configure();
-
         $this->setName('abc:supervisor:status');
         $this->setDescription('Shows status of supervisor instance');
+        $this->setHelp(<<<'EOF'
+The <info>%command.name%</info> shows status of supervisor instance:
+
+    <info>php %command.full_name%</info>
+
+The <info>--id</info> or <info>--host</info> parameter can be used to specify the supervisor instance
+EOF
+        );
     }
 
     /**
@@ -40,8 +46,7 @@ class SupervisorCommand extends BaseCommand
         foreach ($this->supervisors as $supervisor) {
 
             $io->section(sprintf('%s (%s)', $supervisor->getId(), $supervisor->getHost()));
-
-            $io->block(var_dump($supervisor->getStatus()));
+            $io->block($supervisor->getStatus());
         }
     }
 }

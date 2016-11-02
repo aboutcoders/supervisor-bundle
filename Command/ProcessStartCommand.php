@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class ProcessStartCommand extends BaseCommand
+class ProcessStartCommand extends BaseProcessCommand
 {
     /**
      * {@inheritdoc}
@@ -30,6 +30,22 @@ class ProcessStartCommand extends BaseCommand
 
         $this->setName('abc:supervisor:process:start');
         $this->setDescription('Starts supervisor processes');
+        $this->setHelp(<<<'EOF'
+The <info>%command.name%</info> command starts supervisor processes:
+
+    <info>php %command.full_name%</info>
+
+The <info>--id</info> or <info>--host</info> parameter can be used to specify the supervisor instance
+
+You can also optionally specify the name of a process group
+
+    <info>php %command.full_name% --group=groupName</info>
+
+You can also optionally specify the name of a process
+
+    <info>php %command.full_name% --name=processName</info>
+EOF
+        );
     }
 
     /**

@@ -35,8 +35,6 @@ abstract class BaseCommand extends ContainerAwareCommand
     {
         $this->addOption('id', 'i', InputOption::VALUE_OPTIONAL, 'The supervisor id');
         $this->addOption('host', 'H', InputOption::VALUE_OPTIONAL, 'The supervisor host');
-        $this->addOption('group', 'g', InputOption::VALUE_OPTIONAL, 'The name of the process group');
-        $this->addOption('process', 'p', InputOption::VALUE_OPTIONAL, 'The name of the process');
     }
 
     /**

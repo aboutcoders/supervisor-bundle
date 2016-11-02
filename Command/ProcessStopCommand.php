@@ -19,7 +19,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class ProcessStopCommand extends BaseCommand
+class ProcessStopCommand extends BaseProcessCommand
 {
     /**
      * {@inheritdoc}
@@ -31,6 +31,22 @@ class ProcessStopCommand extends BaseCommand
         $this
             ->setName('abc:supervisor:process:stop')
             ->setDescription('Stops the supervisor processes');
+        $this->setHelp(<<<'EOF'
+The <info>%command.name%</info> command stops supervisor processes:
+
+    <info>php %command.full_name%</info>
+
+The <info>--id</info> or <info>--host</info> parameter can be used to specify the supervisor instance
+
+You can also optionally specify the name of a process group
+
+    <info>php %command.full_name% --group=groupName</info>
+
+You can also optionally specify the name of a process
+
+    <info>php %command.full_name% --name=processName</info>
+EOF
+        );
     }
 
     /**

@@ -18,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class ProcessStatusCommand extends BaseCommand
+class ProcessStatusCommand extends BaseProcessCommand
 {
     /**
      * {@inheritdoc}
@@ -29,6 +29,22 @@ class ProcessStatusCommand extends BaseCommand
 
         $this->setName('abc:supervisor:process:status');
         $this->setDescription('Shows status of supervisor processes');
+        $this->setHelp(<<<'EOF'
+The <info>%command.name%</info> shows status of supervisor processes:
+
+    <info>php %command.full_name%</info>
+
+The <info>--id</info> or <info>--host</info> parameter can be used to specify the supervisor instance
+
+You can also optionally specify the name of a process group
+
+    <info>php %command.full_name% --group=groupName</info>
+
+You can also optionally specify the name of a process
+
+    <info>php %command.full_name% --name=processName</info>
+EOF
+        );
     }
 
     /**

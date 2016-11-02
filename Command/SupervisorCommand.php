@@ -10,9 +10,9 @@
 
 namespace Abc\Bundle\SupervisorBundle\Command;
 
+use Abc\Bundle\SupervisorBundle\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>

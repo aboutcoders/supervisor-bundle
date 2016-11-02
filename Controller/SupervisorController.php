@@ -10,14 +10,12 @@
 
 namespace Abc\Bundle\SupervisorBundle\Controller;
 
-use Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class SupervisorController extends Controller
+class SupervisorController extends BaseController
 {
     /**
      * Returns a list of supervisors.
@@ -35,7 +33,7 @@ class SupervisorController extends Controller
     public function listAction()
     {
         $supervisors = array();
-        foreach ($this->getSupervisorManager()->findAll() as $supervisor) {
+        foreach ($this->getManager()->findAll() as $supervisor) {
             $data                = array();
             $data['id']          = $supervisor->getId();
             $data['host']        = $supervisor->getHost();
@@ -46,13 +44,5 @@ class SupervisorController extends Controller
         }
 
         return $this->json($supervisors);
-    }
-
-    /**
-     * @return SupervisorManager
-     */
-    protected function getSupervisorManager()
-    {
-        return $this->get('abc.supervisor.manager');
     }
 }

@@ -52,9 +52,9 @@ class AbcSupervisorExtension extends Extension
 
         $def = $container->getDefinition('abc.supervisor.manager');
         foreach ($config['connections'] as $name => $connection) {
-            $connector  = $this->loadConnector($name, $connection, $container);
-            $supervisor = $this->loadSupervisor($name, $connection['host'], $connector, $container);
-            $def->addMethodCall('add', [$supervisor]);
+            $connectorId  = $this->loadConnector($name, $connection, $container);
+            $supervisorId = $this->loadSupervisor($name, $connection['host'], $connectorId, $container);
+            $def->addMethodCall('add', [new Reference($supervisorId)]);
         }
     }
 
@@ -64,28 +64,36 @@ class AbcSupervisorExtension extends Extension
      * @param string           $name       The name of the connection
      * @param array            $connection A supervisor connection configuration.
      * @param ContainerBuilder $container  A ContainerBuilder instance
-     * @return Definition
+     * @return string The id of the connector definition
      */
     protected function loadConnector($name, array $connection, ContainerBuilder $container)
     {
-        return $container
-            ->setDefinition(sprintf('abc.supervisor.%s_connector', $name), new DefinitionDecorator('abc.supervisor.connector'))
+        $id = sprintf('abc.supervisor.%s_connector', $name);
+
+        $container
+            ->setDefinition($id, new DefinitionDecorator('abc.supervisor.connector'))
             ->setArguments(array($connection));
+
+        return $id;
     }
 
     /**
      * Loads a configured supervisor connector.
      *
-     * @param string           $name      The name of the connection
-     * @param                  $host
-     * @param Definition       $connector
-     * @param ContainerBuilder $container A ContainerBuilder instance
-     * @return Definition
+     * @param string           $name        The name of the connection
+     * @param string           $host        The name of the host
+     * @param string           $connectorId The service id of the connector
+     * @param ContainerBuilder $container   A ContainerBuilder instance
+     * @return string The id of the supervisor definition
      */
-    protected function loadSupervisor($name, $host, Definition $connector, ContainerBuilder $container)
+    protected function loadSupervisor($name, $host, $connectorId, ContainerBuilder $container)
     {
-        return $container
-            ->setDefinition(sprintf('abc.supervisor.%s_supervisor', $name), new DefinitionDecorator('abc.supervisor.supervisor'))
-            ->setArguments(array($name, $host, $connector));
+        $id = sprintf('abc.supervisor.%s_supervisor', $name);
+
+        $container
+            ->setDefinition($id, new DefinitionDecorator('abc.supervisor.supervisor'))
+            ->setArguments(array($name, $host, new Reference($connectorId)));
+
+        return $id;
     }
 }

@@ -10,16 +10,14 @@
 
 namespace Abc\Bundle\SupervisorBundle\Controller;
 
-use Abc\Bundle\SupervisorBundle\Supervisor\SupervisorManager;
 use fXmlRpc\Exception\FaultException;
 use Nelmio\ApiDocBundle\Annotation\ApiDoc;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
  */
-class ProcessController extends Controller
+class ProcessController extends BaseController
 {
     /**
      * Returns a list of processes.
@@ -126,13 +124,5 @@ class ProcessController extends Controller
         } catch (FaultException $e) {
             return $this->json(['error' => $e->getMessage()], 500);
         }
-    }
-
-    /**
-     * @return SupervisorManager
-     */
-    protected function getManager()
-    {
-        return $this->get('abc.supervisor.manager');
     }
 }

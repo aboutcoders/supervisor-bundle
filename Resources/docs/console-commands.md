@@ -1,5 +1,5 @@
-Commands
-========
+Console Commands
+================
 
 Until now only a subset of the functionality that is available over the XML-RPC API is available as a symfony command. The following commands are available:
 

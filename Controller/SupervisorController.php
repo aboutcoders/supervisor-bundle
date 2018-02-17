@@ -10,7 +10,9 @@
 
 namespace Abc\Bundle\SupervisorBundle\Controller;
 
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Nelmio\ApiDocBundle\Annotation\Operation;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 
 /**
  * @author Hannes Schulz <hannes.schulz@aboutcoders.com>
@@ -20,14 +22,18 @@ class SupervisorController extends BaseController
     /**
      * Returns a list of supervisors.
      *
-     * @ApiDoc(
-     *   description="Returns a collection of supervisors",
-     *   section="AbcSupervisorBundle",
-     *   statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when supervisor not found"
-     * })
-     *
+     * @Operation(
+     *     tags={"AbcSupervisorBundle"},
+     *     summary="Returns a collection of supervisors",
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Returned when successful"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="Returned when supervisor not found"
+     *     )
+     * )
      * @return \Symfony\Component\HttpFoundation\JsonResponse
      */
     public function listAction()

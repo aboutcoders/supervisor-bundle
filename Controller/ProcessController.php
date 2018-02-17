@@ -11,7 +11,9 @@
 namespace Abc\Bundle\SupervisorBundle\Controller;
 
 use fXmlRpc\Exception\FaultException;
-use Nelmio\ApiDocBundle\Annotation\ApiDoc;
+use Nelmio\ApiDocBundle\Annotation\Operation;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Swagger\Annotations as SWG;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -22,16 +24,25 @@ class ProcessController extends BaseController
     /**
      * Returns a list of processes.
      *
-     * @ApiDoc(
-     *   description="Returns a collection of processes",
-     *   section="AbcSupervisorBundle",
-     *   requirements={
-     *      {"name"="id", "dataType"="string", "required"=true, "description"="The supervisor id"},
-     *   },
-     *   statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when supervisor not found"
-     * })
+     * @Operation(
+     *     tags={"AbcSupervisorBundle"},
+     *     summary="Returns a collection of processes",
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="query",
+     *         description="The supervisor id",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Returned when successful"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="Returned when supervisor not found"
+     *     )
+     * )
      *
      * @param string $id The id of the supervisor instance
      * @return JsonResponse
@@ -49,19 +60,32 @@ class ProcessController extends BaseController
     /**
      * Starts a process.
      *
-     * @ApiDoc(
-     *   description="Starts a supervisor process",
-     *   section="AbcSupervisorBundle",
-     *   requirements={
-     *      {"name"="id", "dataType"="string", "required"=true, "description"="The supervisor id"},
-     *      {"name"="name", "dataType"="string", "required"=true, "description"="The process name"},
-     *   },
-     * statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when supervisor or process not found"
-     *   }
+     * @Operation(
+     *     tags={"AbcSupervisorBundle"},
+     *     summary="Starts a supervisor process",
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="query",
+     *         description="The supervisor id",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="The process name",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Returned when successful"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="Returned when supervisor not found"
+     *     )
      * )
-     *
      * @param string $id   The id of the supervisor instance
      * @param string $name The process name
      * @param bool   $wait
@@ -89,19 +113,32 @@ class ProcessController extends BaseController
     /**
      * Stops a process.
      *
-     * @ApiDoc(
-     *   description="Starts a supervisor process",
-     *   section="AbcSupervisorBundle",
-     *   requirements={
-     *      {"name"="id", "dataType"="string", "required"=true, "description"="The supervisor id"},
-     *      {"name"="name", "dataType"="string", "required"=true, "description"="The process name"},
-     *   },
-     * statusCodes = {
-     *     200 = "Returned when successful",
-     *     404 = "Returned when supervisor or process not found"
-     *   }
+     * @Operation(
+     *     tags={"AbcSupervisorBundle"},
+     *     summary="Stops a supervisor process",
+     *     @SWG\Parameter(
+     *         name="id",
+     *         in="query",
+     *         description="The supervisor id",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="The process name",
+     *         required=true,
+     *         type="string"
+     *     ),
+     *     @SWG\Response(
+     *         response="200",
+     *         description="Returned when successful"
+     *     ),
+     *     @SWG\Response(
+     *         response="404",
+     *         description="Returned when supervisor not found"
+     *     )
      * )
-     *
      * @param string $id   The id of the supervisor instance
      * @param string $name The process name
      * @param bool   $wait

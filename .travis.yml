@@ -30,4 +30,4 @@ install:
     - composer update $COMPOSER_FLAGS
 
 script:
-  - bin/phpunit --coverage-clover clover
+  - vendor/phpunit/phpunit --coverage-clover clover
